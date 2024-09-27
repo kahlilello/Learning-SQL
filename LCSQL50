@@ -1,0 +1,1068 @@
+
+
+### Documenting the SQL queries I wrote to solve Leet Code SQL 50.
+
+
+### Select 
+    # 1757 Recyclable and Low Fat Products - Easy
+        SELECT product_id
+            FROM Products
+            WHERE
+                low_fats = 'Y'
+                AND
+                recyclable = 'Y'
+
+    # 584 Find Customer Referee - Easy     
+        SELECT NAME 
+            FROM Customer 
+            WHERE referee_id IS NULL 
+                OR referee_id != 2;
+
+    # 595 Big Countries - Easy
+        SELECT name, population, area
+            FROM World
+            WHERE area >= 3000000
+                OR population >= 25000000
+
+    # 1148 Article Views - Easy
+        SELECT DISTINCT author_id AS id
+            FROM Views
+            WHERE author_id = viewer_id
+            ORDER BY author_id
+
+    # 1683 Invalid Tweets - Easy
+        SELECT tweet_id
+            FROM Tweets
+            WHERE LENGTH(content)>15
+
+
+### Basic Joins
+
+    # 1378 Replace Employee ID with Unique Identifier - Easy
+        SELECT unique_id, name
+            FROM EmployeeUNI
+            RIGHT JOIN Employees
+            USING(id)
+
+    # 1068 Product Sales Analysis I - Easy
+        SELECT product_name, year, price
+            FROM Sales AS s
+            JOIN Product AS p
+            USING(product_id)
+
+    # 1581 Customers Who Visited but Did Not Make Any Transactions - Easy
+        SELECT customer_id, COUNT(customer_id) AS count_no_trans
+            FROM
+            (
+            SELECT *
+            FROM Visits AS v
+            LEFT JOIN Transactions AS t
+                USING(visit_id) 
+            ) AS total 
+            WHERE transaction_id IS NULL
+            GROUP BY customer_id
+
+    # 197 Rising Temperature - Easy
+    SELECT today.id
+        FROM Weather today
+        JOIN Weather yesterday 
+            ON DATEDIFF(today.recordDate, yesterday.recordDate) = 1
+        WHERE today.temperature > yesterday.temperature
+
+    # 1661 Average Time of Process per Machine - Easy
+    SELECT a1.machine_id,
+        ROUND(AVG(a2.timestamp - a1.timestamp),3) AS processing_time
+        FROM Activity AS a1
+        JOIN Activity AS a2
+            ON a1.machine_id = a2.machine_id
+                AND a1.process_id = a2.process_id
+                AND a1.activity_type = 'start'
+                AND a2.activity_type = 'end'
+        GROUP BY a1.machine_id
+
+    # 577 Employee Bonus - Easy
+    SELECT name, bonus 
+        FROM Employee e 
+        LEFT JOIN Bonus b ON
+            e.empID = b.empID
+        WHERE bonus < 1000 OR bonus IS NULL
+    
+    # 1280 Students and Examinations - Easy
+    SELECT s.student_id, s.student_name, s.subject_name,
+        COUNT(e.subject_name) AS attended_exams
+        FROM 
+            (SELECT  s.student_id, s.student_name, su.subject_name
+            FROM Students AS s
+            CROSS JOIN Subjects AS su) AS s
+        LEFT JOIN Examinations AS e
+            ON s.student_id = e.student_id
+                AND s.subject_name = e.subject_name
+        GROUP BY s.student_id, s.subject_name
+        ORDER BY s.student_id, s.subject_name
+
+                # 1280 Students and Examination V2 - Easy
+                    SELECT s.student_id, s.student_name, su.subject_name,
+                        COUNT(e.subject_name) AS attended_exams
+                        FROM Students AS s
+                        CROSS JOIN Subjects AS su
+                        
+                        LEFT JOIN Examinations AS e
+                            ON s.student_id = e.student_id
+                                AND su.subject_name = e.subject_name
+                    
+                        GROUP BY s.student_id, su.subject_name
+                        ORDER BY s.student_id, su.subject_name
+    
+    # 570 Managers with at least 5 direct reports - Medium
+    SELECT name FROM
+     (SELECT e1.id, e1.name, COUNT(*) AS cnt
+        FROM Employee e1
+        JOIN Employee e2
+            ON e1.id = e2.managerId
+        GROUP BY e1.id
+     ) AS cnt
+        WHERE cnt >= 5
+
+
+                # 570 Managers with at least 5 direct reports - Medium 2
+                    SELECT name
+                        FROM Employee
+                        WHERE id IN
+                        (
+                            SELECT managerID
+                            FROM
+                            (SELECT managerID, COUNT(managerID)
+                            FROM Employee
+                            GROUP BY managerID
+                            HAVING COUNT(managerID) >= 5
+                            ) AS managers
+                        )
+                                
+    
+    # 1934 Confirmation Rate - Medium
+    SELECT user_id, 
+        ROUND((SUM(confirmation)/COUNT(user_id)),2) AS confirmation_rate
+        FROM 
+        (SELECT s.user_id, c.action, 
+            (CASE 
+                WHEN action = 'confirmed' THEN 1
+                ELSE 0
+                END) AS confirmation    
+            
+            FROM Signups AS s
+            LEFT JOIN Confirmations AS c
+                ON s.user_id = c.user_id
+        ) AS confirms
+        GROUP BY user_id
+
+                    # 1934 Confirmation Rate - Easy 2
+                        SELECT s.user_id,
+                            ROUND((
+                            SUM(CASE WHEN action = 'confirmed' THEN 
+                                1 ELSE 0 END)
+                            / COUNT(s.user_id)
+                            ),2) AS confirmation_rate
+                            FROM Confirmations AS c
+                            RIGHT JOIN Signups AS s
+                                USING(user_id)
+                            GROUP BY user_id
+
+
+
+### Basic Aggregate Functions
+
+
+    # 620 Not Boring Movies - Easy
+    SELECT * FROM Cinema 
+        WHERE id % 2 = 1 AND description != 'boring'
+        ORDER BY rating DESC
+
+            # 620 Not Boring Movies - Easy 2 
+            SELECT * 
+                FROM Cinema
+                WHERE LOWER(description) != 'boring'
+                    AND id % 2 = 1
+                ORDER BY rating DESC
+    
+    # 1251 Average Selling Price - Easy
+    SELECT p.product_id, COALESCE(ROUND(SUM((u.units * p.price))/SUM(units), 2),0) AS average_price
+        FROM Prices AS p 
+        LEFT JOIN UnitsSold AS u 
+            ON p.product_id = u.product_id
+                AND p.end_date >= u.purchase_date AND u.purchase_date >= p.start_date
+        GROUP BY p.product_id
+
+            # 1251 Average Selling Price - Easy
+            SELECT p.product_id,
+                IFNULL(ROUND(SUM(units*price)/SUM(units), 2), 0) AS average_price
+                FROM Prices AS p
+                LEFT JOIN UnitsSold AS u
+                    ON p.product_id = u.product_id
+                        AND (u.purchase_date BETWEEN p.start_date AND p.end_date)
+                GROUP BY p.product_id
+  
+    # 1075 Project Employees I - Easy
+    SELECT project_id, ROUND(AVG(experience_years),2) AS average_years
+        FROM Project AS p
+        JOIN Employee AS e ON
+            p.employee_id = e.employee_id
+        GROUP BY project_id
+
+            # 1075 Project Employees I - Easy II
+            SELECT project_id, ROUND(AVG(experience_years), 2) AS average_years
+                FROM Project AS p
+                JOIN Employee AS e
+                    USING(employee_id)
+                GROUP BY project_id
+    
+    # 1633 Percentage of Users Attended a Contest - Easy
+    SELECT contest_id, 
+        ROUND((COUNT(user_id)/(SELECT COUNT(user_id) FROM Users))*100, 2) AS percentage
+        FROM Register
+        GROUP BY contest_id
+        ORDER BY percentage DESC, contest_id ASC
+
+            # 1633 Percentage of Users Attended a Contest - Easy
+            SELECT r.contest_id, 
+                ROUND((COUNT(DISTINCT u.user_id)*100) / (SELECT COUNT(DISTINCT user_id) FROM Users), 2) AS percentage
+                FROM Register AS r
+                JOIN Users AS u 
+                    USING(user_id)
+                GROUP BY contest_id
+                ORDER BY percentage DESC
+                    , r.contest_id ASC
+
+    
+    # 1211 Queries Quality and Percentage - Easy
+    SELECT query_name, ROUND(AVG((rating/position)),2) AS quality,
+        ROUND((SUM(CASE WHEN rating < 3 THEN 1 
+            ELSE 0 END)/COUNT(query_name))*100 , 2) AS poor_query_percentage
+        FROM Queries 
+        WHERE query_name IS NOT NULL
+        GROUP BY query_name
+
+            # 1211 Queries Quality and Percentage - Easy II
+            SELECT query_name
+                , ROUND(AVG(rating/position), 2) AS quality
+                , ROUND((SUM(CASE WHEN rating < 3 THEN 1
+                        ELSE 0
+                        END)
+                    /
+                    COUNT(query_name)) * 100, 2)
+                  AS poor_query_percentage
+                
+                FROM Queries
+                WHERE query_name IS NOT NULL
+                GROUP BY query_name
+                
+    
+    # Number of Unique Subjects Taught by Each Teacher - Easy
+    SELECT teacher_id, COUNT(DISTINCT subject_id) AS cnt
+        FROM Teacher
+        GROUP BY teacher_id
+    
+    # User Activity in the Past 30 Days I - Easy
+    SELECT activity_date AS day, COUNT(DISTINCT user_id) AS active_users
+        FROM Activity 
+        WHERE DATEDIFF("2019-07-27", activity_date) < 30
+            AND DATEDIFF("2019-07-27", activity_date) >= 0
+        GROUP BY activity_date
+    
+    # Classes more than 5 Students - Easy
+    WITH s AS
+        (SELECT class, COUNT(DISTINCT student) AS cnt
+        FROM Courses
+        GROUP BY class) 
+    SELECT class FROM s
+        WHERE cnt >= 5
+    
+    # Find Followers Count - Easy 
+    SELECT user_id, COUNT(DISTINCT follower_id) AS followers_count
+        FROM Followers
+        GROUP BY user_id
+        ORDER BY user_id 
+    
+    # Biggest Single Number - Easy
+    SELECT MAX(num) AS num FROM
+        (SELECT num
+        FROM MyNumbers
+        GROUP BY num
+        HAVING COUNT(num) = 1) AS singles
+    
+    
+    # 1193 Monthly Transactions I - Medium
+        SELECT LEFT(trans_date, 7) AS month, country, 
+        COUNT(*) AS trans_count, 
+        SUM(CASE WHEN state = 'approved' THEN 1  
+            ELSE 0 END) AS approved_count,
+        SUM(amount) AS trans_total_amount,
+        SUM(CASE WHEN state = 'approved' THEN amount
+            ELSE 0 END) AS approved_total_amount
+        FROM Transactions
+        GROUP BY month, country
+
+                # 1193 Monthly Transactions I - Medium
+                SELECT 
+                    LEFT(trans_date, 7) AS month
+                    , country 
+                    , COUNT(state) AS trans_count
+                    , COUNT(CASE 
+                                WHEN state = 'approved'
+                                    THEN 1
+                                END
+                            )
+                            AS approved_count
+                    , SUM(amount) AS trans_total_amount
+                    , SUM(
+                            CASE 
+                                WHEN state = 'approved'
+                                    THEN amount
+                                ELSE 0
+                                END
+                        ) AS approved_total_amount
+                
+                FROM Transactions
+                    GROUP BY LEFT(trans_date, 7), country
+    
+    
+    
+    # 1174 Immediate Food Delivery - Medium
+        WITH first_order AS
+        (SELECT customer_id, MIN(order_date) AS order_date
+            FROM Delivery
+            GROUP BY customer_id
+        ) 
+        SELECT 
+        ROUND((SUM(CASE WHEN d.order_date = d.customer_pref_delivery_date THEN 1
+            ELSE 0 END) 
+        / COUNT(*)) * 100, 2) AS immediate_percentage
+        FROM Delivery AS d
+        JOIN first_order AS f
+            ON d.customer_id = f.customer_id
+                AND d.order_date = f.order_date
+
+                # 1174 Immediate Food Delivery - Medium II (31%)
+                    SELECT 
+                        ROUND(((SUM(CASE WHEN order_date = customer_pref_delivery_date
+                        THEN 1
+                            ELSE 0
+                            END)
+                            /
+                            COUNT(*)) * 100), 2) AS immediate_percentage
+                        FROM Delivery
+                        WHERE 
+                        (customer_id, order_date)
+                            IN (SELECT customer_id, MIN(order_date)
+                                    FROM Delivery
+                                    GROUP BY customer_id)
+
+                # 1174 Immediate Food Delivery - Medium III (56%)
+                    SELECT 
+                        ROUND(AVG(order_date = customer_pref_delivery_date)*100, 2) AS immediate_percentage
+                        FROM Delivery
+                        WHERE 
+                        (customer_id, order_date)
+                            IN (SELECT customer_id, MIN(order_date)
+                                    FROM Delivery
+                                    GROUP BY customer_id)
+    
+    # 550 Game Play Analysis IV - Medium
+        WITH first AS
+        (
+        SELECT *, MIN(event_date) OVER(PARTITION BY player_id) AS first_event
+            FROM Activity
+        )
+        , consecutives AS
+        (
+        SELECT *,
+            CASE WHEN DATEDIFF(event_date, first_event) = 1 THEN 1
+                ELSE 0 
+                END AS consecutive
+            FROM first
+        )
+        SELECT ROUND(SUM(consecutive)/COUNT( DISTINCT player_id),2) AS fraction
+            FROM consecutives
+
+                    # 550 Game Play Analysis IV - Medium (92%)
+                    
+                    WITH Parted AS (
+                            SELECT player_id, event_date,
+                                MIN(event_date) OVER(PARTITION BY player_id) AS earliest
+                            FROM Activity 
+                        )
+                        SELECT 
+                            ROUND(CAST(SUM(CASE WHEN event_date = earliest + INTERVAL '1' DAY THEN 1 ELSE 0 END) AS FLOAT) 
+                                / COUNT(DISTINCT player_id), 2) AS fraction
+                        FROM Parted;
+
+
+### Sorting and Group
+
+    # 2356 Number of Unique Subjects Taught by Each Teacher - Easy (80%)
+
+        SELECT teacher_id, COUNT(DISTINCT subject_id) AS cnt
+            FROM Teacher
+            GROUP BY teacher_id
+
+    # 1141 User Activity for the Past 30 Days I - Easy (52%)
+        SELECT activity_date AS day, COUNT(DISTINCT user_id) AS active_users
+            FROM Activity
+                WHERE 
+                activity_date BETWEEN '2019-07-27' - INTERVAL 29 DAY AND '2019-07-27'
+                GROUP BY activity_date
+
+    # 596 Classes More than 5 Students - Easy (26.43%)
+        SELECT class
+        FROM 
+        (
+        SELECT class, COUNT(student) AS cnt
+            FROM Courses
+            GROUP BY class
+            HAVING COUNT(student) >= 5
+        ) AS cnt
+
+                # 596 Classes More than 5 Students - Easy (17%) - Still a little too slow
+                    SELECT class
+                        FROM 
+                        COURSES
+                        GROUP BY class
+                        HAVING COUNT(class) >= 5
+
+    # 1729 Find Followers Count - Easy
+        SELECT user_id, COUNT(follower_id) AS followers_count
+            FROM Followers
+                GROUP BY user_id
+                ORDER BY user_id ASC
+
+    # 619 Biggest Single Number - Easy (85%)
+       SELECT MAX(num) AS num
+            FROM 
+                (SELECT num 
+                FROM MyNumbers 
+                GROUP BY num
+                HAVING COUNT(*) = 1)
+                AS singles
+
+                # 619 Biggest Single Number - Easy (66%)
+
+                    SELECT
+                        (
+                        SELECT num 
+                            FROM MyNumbers 
+                            GROUP BY num
+                            HAVING COUNT(*) = 1
+                            ORDER BY num DESC
+                            LIMIT 1
+                        ) AS num
+
+    # 1070 Product Sales Analysis III - Medium
+        SELECT product_id, year AS first_year,
+            quantity, price
+            FROM Sales
+            WHERE (product_id, year) IN
+            (SELECT product_id, MIN(year)
+                FROM Sales 
+                GROUP BY product_id)
+    
+                    # 1070 Product Sales Analysis III - Medium II (98.64%)
+                    SELECT product_id, year AS first_year
+                            , quantity, price
+                        
+                        FROM Sales 
+                        WHERE (product_id, year) IN
+                        (
+                        SELECT p.product_id, MIN(s.year) AS fyear
+                            FROM Sales AS s
+                            JOIN Product AS p
+                                USING(product_id)
+                                GROUP BY p.product_id
+                        )
+
+    # 1045 Customers Who Bought All Products - Medium
+        SELECT customer_id
+        FROM Customer
+        GROUP BY customer_id
+        HAVING COUNT(DISTINCT product_key) = 
+        (SELECT COUNT(DISTINCT product_key) 
+        FROM Product)
+
+                # 1045 Customers Who Bought All Products - Medium II (66%)
+                    SELECT customer_id
+                        FROM Customer
+                        GROUP BY customer_id
+                        HAVING 
+                            COUNT(DISTINCT product_key) = 
+                                (SELECT COUNT(product_key)
+                                    FROM Product) 
+
+
+### Advanced Selects and Joins
+
+    # 1731 The Number of Employees Which Report to Each Employee - Easy
+    SELECT m.employee_id, m.name, 
+        COUNT(e.employee_id) AS reports_count,
+        ROUND(AVG(e.age),0) AS average_age
+        FROM Employees AS m
+        JOIN Employees AS e
+            ON m.employee_id = e.reports_to
+        GROUP BY m.employee_id
+        ORDER BY m.employee_id
+
+                # 1731 The Number of Employees Which Report to Each Employee - Easy II (96%)
+                    SELECT 
+                        e1.employee_id,
+                        e1.name,
+                        e2.reports_count,
+                        e2.average_age
+                        FROM Employees AS e1
+                        JOIN
+                        (SELECT 
+                            reports_to,
+                            COUNT(reports_to) AS reports_count,
+                            ROUND(AVG(age), 0) AS average_age
+                            FROM Employees
+                            GROUP BY reports_to
+                        ) AS e2
+                        ON e1.employee_id = e2.reports_to
+                        ORDER BY e1.employee_id
+                        
+    # 1789 Primary Department for Each Employee - Easy
+    WITH cnt AS
+    (SELECT employee_id, COUNT(DISTINCT department_id) AS cnt
+        FROM Employee
+        GROUP BY employee_id
+    )
+    SELECT e.employee_id, e.department_id
+        FROM cnt AS c
+        JOIN Employee AS e 
+            ON e.employee_id = c.employee_id
+        WHERE cnt = 1 OR primary_flag = 'Y'
+
+                    # 1789 Primary Department for Each Employee - Easy II (31%)        
+                        SELECT *
+                        FROM
+                        (
+                        SELECT e1.employee_id,
+                            CASE WHEN 
+                                primary_flag = 'Y' THEN department_id
+                                WHEN (SELECT COUNT(e2.employee_id)
+                                        FROM Employee AS e2
+                                        
+                                        
+                                        WHERE e1.employee_id = e2.employee_id
+                                        GROUP BY e2.employee_id
+                                        ) = 1
+                                    THEN department_id
+                                ELSE NULL
+                                END AS department_id
+                            FROM Employee AS e1
+                        ) AS e3
+                        WHERE department_id IS NOT NULL  
+
+    # 610 Triangle Judgement - Easy
+    SELECT *,
+        CASE WHEN
+            x + y > z AND 
+            y + z > x AND
+            z + x > y THEN 'Yes'
+            ELSE 'No'
+        END AS triangle
+        FROM Triangle
+
+                # 610 Triangle Judgement - Easy II (99%) 
+                    SELECT x, y, z,
+                        CASE WHEN 
+                            x + y > z AND x + z > y AND z + y > x
+                                THEN 'Yes'
+                            ELSE 'No'
+                            END AS triangle
+                        FROM triangle
+
+    # 180 Consecutive Numbers - Medium
+        SELECT DISTINCT l1.num AS ConsecutiveNums
+            FROM Logs AS l1
+            JOIN Logs AS l2
+                ON l1.num = l2.num
+                    AND l1.id = l2.id - 1
+            JOIN Logs AS l3
+                ON l2.num = l3.num
+                    AND l2.id = l3.id - 1
+
+                # 180 - Cosecutive Numbers - Medium II (46%)
+
+                        SELECT DISTINCT L1.num AS ConsecutiveNums
+                            FROM Logs AS L1
+                            JOIN Logs AS L2
+                            JOIN Logs AS L3
+                                WHERE (L1.id = (L2.id - 1)   
+                                        AND L1.id = (L3.id - 2))
+                                    AND 
+                                        (L1.num = L2.num AND
+                                        L2.num = L3.num)
+
+    # 1164 Product Price at a Given Date - (83.91%)
+        SELECT p2.product_id, IFNULL(p1.new_price, 10) AS price
+            FROM Products AS p1
+            RIGHT JOIN(
+            SELECT DISTINCT p3.product_id, p4.date 
+                FROM Products AS p3
+                LEFT JOIN(
+                    SELECT product_id, MAX(change_date) AS date
+                    FROM Products
+                    WHERE change_date <= '2019-08-16'
+                    GROUP BY product_id
+                ) AS p4
+                USING(product_id)
+        
+            ) AS p2
+            ON p1.product_id = p2.product_id
+                AND p1.change_date = p2.date
+
+    # Last Person to Fit in the Bus - (56%)
+        SELECT person_name
+            FROM Queue
+            WHERE turn =
+            (
+            SELECT MAX(turn) AS last
+            FROM
+            (
+            SELECT *
+            FROM
+            (SELECT person_name, weight, turn,
+                SUM(weight) OVER(ORDER BY turn) AS total
+                FROM Queue
+            ) AS running
+            WHERE total <= 1000
+            ) AS last
+            )
+
+
+    # 1907 Count Salary Categories - Medium
+        WITH categories AS
+        (
+        SELECT 'Low Salary' AS category
+        UNION
+        SELECT 'Average Salary' AS category
+        UNION 
+        SELECT 'High Salary' AS category
+        )
+        , AccountsCat AS
+        (
+        SELECT *,
+            CASE 
+                WHEN income < 20000 THEN 'Low Salary'
+                WHEN income > 50000 THEN 'High Salary'
+                ELSE 'Average Salary'
+            END AS categorized
+            FROM Accounts
+        )
+        , totalCat AS
+        (
+        SELECT * 
+            FROM AccountsCat AS a
+            RIGHT JOIN categories AS c
+                ON a.categorized = c.category
+        )
+        SELECT category, 
+            COALESCE(COUNT(categorized),0) AS accounts_count
+            FROM totalCat
+            GROUP BY category
+
+                # 1907 Count Salary Categories - Medium II (83%)
+                SELECT 'Low Salary' AS category,
+                    COUNT(income) AS accounts_count
+                    FROM Accounts
+                    WHERE income < 20000
+                UNION
+                SELECT 'Average Salary' AS category,
+                    COUNT(income) AS accounts_count
+                    FROM Accounts
+                    WHERE income >= 20000
+                        AND income <= 50000
+                UNION
+                SELECT 'High Salary' AS category,
+                    COUNT(income) AS accounts_count
+                    FROM Accounts
+                    WHERE income > 50000
+
+### Subqueries 
+    
+    # 1978 Employees Whose Managers Left the Company - Easy
+    SELECT employee_id 
+        FROM Employees 
+        WHERE salary < 30000 AND manager_id IS NOT NULL 
+            AND manager_id NOT IN (SELECT employee_id FROM Employees)
+        ORDER BY employee_id
+
+            # 1978 Employees Whose Managers Left the Company - Easy (81.89%)
+            SELECT employee_id 
+                FROM Employees
+                WHERE salary < 30000
+                    AND manager_id NOT IN
+                        (SELECT employee_id
+                        FROM Employees)
+                ORDER BY employee_id
+    
+    # 626 Exchange Seats - Medium
+    SELECT 
+    CASE 
+        WHEN id = (SELECT MAX(id) FROM Seat) AND id%2 = 1
+            THEN id
+        WHEN id%2 = 1
+            THEN id + 1
+        WHEN id%2 = 0
+            THEN id - 1
+        END AS id,
+    student
+    FROM Seat
+    ORDER BY id
+
+            # 626 Exchange Seats - Medium II (90%)
+            SELECT s1.id, s2.student
+                FROM Seat AS s1
+                LEFT JOIN
+                    (SELECT id,
+                    CASE WHEN
+                        id%2 != 0 AND id != (SELECT MAX(id) FROM Seat)
+                            THEN id + 1
+                        WHEN
+                        id%2 = 0 THEN id - 1
+                        ELSE id
+                    END AS swapped
+                    , student
+                    FROM Seat
+                    ) AS s2
+                    ON s1.id = s2.swapped
+
+    # 1341 Movie Rating - Medium
+    (
+    SELECT name AS results
+        FROM MovieRating AS m
+        JOIN Users AS u
+            ON m.user_id = u.user_id
+        GROUP BY m.user_id
+        ORDER BY COUNT(m.user_id) DESC, name
+        LIMIT 1
+    )
+    UNION ALL
+    (
+    SELECT title AS results
+        FROM MovieRating AS r
+        JOIN Movies AS m
+            ON r.movie_id = m.movie_id
+        WHERE MONTH(created_at) = '02'
+            AND YEAR(created_at) = '2020' 
+        GROUP BY r.movie_id
+        ORDER BY AVG(rating) DESC, title
+        LIMIT 1
+    )
+
+                # 1341 Movie Rating - Medium II (74.67%)
+                (
+                SELECT name AS results
+                FROM Users As u
+                JOIN 
+                (
+                SELECT user_id, COUNT(*) AS cnt
+                    , RANK() OVER(ORDER BY COUNT(*) DESC) AS ranking
+                    FROM MovieRating
+                    GROUP BY user_id
+                ) AS m
+                USING(user_id)
+                WHERE m.ranking = 1
+                ORDER BY name
+                LIMIT 1
+                )
+                UNION ALL
+                (
+                SELECT title
+                    FROM Movies AS m
+                    JOIN
+                        (SELECT movie_id, AVG(rating) AS rate,
+                            RANK() OVER (ORDER BY AVG(rating) DESC) AS ranking
+                        FROM MovieRating
+                        WHERE created_at LIKE '2020-02%'
+                        GROUP BY movie_id
+                        ) AS r
+                    USING(movie_id)
+                    WHERE ranking = 1
+                    ORDER BY title
+                    LIMIT 1
+                )
+
+    # 1321 Restaurant Growth - Medium (63.84%)
+    SELECT c1.visited_on
+        , (SELECT SUM(amount) 
+            FROM Customer AS c2
+                WHERE c2.visited_on
+                    BETWEEN DATE_ADD(c1.visited_on, INTERVAL -6 day)
+                        AND c1.visited_on)
+            AS amount
+        , (SELECT ROUND(SUM(amount)/7, 2)
+            FROM Customer AS c2
+                WHERE c2.visited_on
+                    BETWEEN DATE_ADD(c1.visited_on, INTERVAL -6 DAY)
+                        AND c1.visited_on)
+            AS average_amount
+        FROM Customer AS c1
+        WHERE c1.visited_on >= DATE_ADD(
+                (SELECT MIN(c3.visited_on)
+                    FROM Customer AS c3), INTERVAL 6 DAY)
+        GROUP BY c1.visited_on
+
+
+    # 602 Friend Requests II: Who has the most Friends - Medium
+    WITH ids AS
+    (
+    SELECT DISTINCT requester_id AS id
+        FROM RequestAccepted
+    UNION 
+    SELECT DISTINCT accepter_id
+        FROM RequestAccepted
+    )
+    , requests AS
+    (
+    SELECT requester_id AS id, COUNT(accept_date) AS requests
+        FROM RequestAccepted
+        GROUP BY requester_id
+    )
+    , accepts AS
+    (
+    SELECT accepter_id AS id, COUNT(accept_date) AS accepts
+        FROM RequestAccepted
+        GROUP BY accepter_id
+    )
+    SELECT i.id, (COALESCE(requests, 0) + COALESCE(accepts, 0)) AS num
+        FROM ids AS i
+            LEFT JOIN requests AS r
+                ON i.id = r.id
+            LEFT JOIN accepts AS a
+                ON i.id = a.id
+        ORDER BY num DESC
+        LIMIT 1
+
+                # 602 Friend Request II: Who has the Most Friends - Medium II (53.70%)
+                SELECT id, COUNT(*) AS num
+                    FROM
+                    (
+                    SELECT requester_id AS id FROM RequestAccepted 
+                    UNION ALL
+                    SELECT accepter_id AS id FROM RequestAccepted
+                    ) AS unioned
+                    GROUP BY id
+                    ORDER BY num DESC
+                    LIMIT 1
+
+    # 585 Investments in 2016 - Medium
+    SELECT ROUND(SUM(tiv_2016),2) AS tiv_2016
+        FROM Insurance
+            WHERE tiv_2015 IN
+            (
+            SELECT tiv_2015 FROM Insurance
+            GROUP BY tiv_2015
+            HAVING COUNT(*) > 1
+            )
+            AND (lat,lon) IN
+            (SELECT lat, lon
+                FROM Insurance
+                GROUP BY lat, lon
+                HAVING COUNT(*) = 1
+            )
+
+            # 585 Investments in 2016 - Medium II (82.50%)
+            SELECT ROUND(SUM(tiv_2016),2) AS tiv_2016
+                FROM Insurance
+                WHERE (CONCAT(CAST(lat AS CHAR(50)),'-', CAST(lon AS CHAR(50)))) IN
+                (SELECT 
+                    CONCAT(CAST(lat AS CHAR(50)),'-', CAST(lon AS CHAR(50))) AS latlon
+                    FROM Insurance
+                    GROUP BY CONCAT(CAST(lat AS CHAR(50)),'-', CAST(lon AS CHAR(50)))
+                    HAVING COUNT(*) = 1
+                )
+                AND tiv_2015 IN
+                (SELECT tiv_2015
+                    FROM Insurance
+                    GROUP BY tiv_2015
+                    HAVING COUNT(*) > 1)
+
+    # 185 Department Top Three Salaries - Hard (65.17%)
+        WITH rankings AS(
+        SELECT d.name AS Department
+            , e.name AS Employee
+            , e.salary AS Salary
+            , DENSE_RANK() OVER(PARTITION BY d.name ORDER BY salary DESC) AS ranking
+            FROM Employee AS e
+            JOIN Department AS d
+                ON e.departmentID = d.id
+        )
+        
+        SELECT Department, Employee, Salary
+            FROM rankings
+            WHERE ranking < 4
+
+### Advanced String Functions/REGEX/Clause
+    
+    # 1667 Fix Names in a Table - Easy
+    SELECT user_id, CONCAT(UPPER(LEFT(name, 1)), LOWER(SUBSTRING(name, 2, LENGTH(name)))) AS name
+        FROM Users
+        ORDER BY user_id
+
+                # 1667 Fix Names in a Table - Easy II (65.50%)
+                    SELECT user_id, 
+                        CONCAT(UPPER(LEFT(name, 1)), LOWER(SUBSTRING(name, 2))) AS name
+                        FROM Users
+                        ORDER BY user_id
+    
+    # 1527 Patients with a Condition - Easy
+    SELECT * 
+        FROM Patients
+        WHERE conditions LIKE '% DIAB1%' OR conditions LIKE 'DIAB1%'
+
+            # 1527 Patients w/ a Condition - Easy II (6.5%) 
+            SELECT * 
+                FROM Patients
+                WHERE (conditions LIKE 'DIAB1%'
+                    OR conditions LIKE '% DIAB1%')
+
+                    # 1527 Patients w/ a Condition - Easy III (38.50%)
+                    SELECT * 
+                        FROM Patients
+                        WHERE conditions REGEXP '^DIAB1+| DIAB1+'
+    
+    # 196 Delete Duplicate Emails - Easy
+    DELETE p1
+        FROM Person AS p1
+        JOIN Person AS p2 
+        ON p1.email = p2.email
+        WHERE p1.id > p2.id
+
+                # 196 Delete Duplicate Emails - Easy II (98.85%)
+                DELETE FROM Person
+                WHERE id NOT IN
+                    (SELECT * FROM
+                        (SELECT MIN(id)
+                        FROM Person
+                        GROUP BY email) AS ids
+                    )
+    
+    # 1484 Group Products by the Date - Easy
+    SELECT sell_date, COUNT(DISTINCT product) AS num_sold,
+        GROUP_CONCAT(DISTINCT product ORDER BY product SEPARATOR ',') AS products
+        FROM Activities
+        GROUP BY sell_date
+
+                # 1484 Group Products by the Date - East II (81.15%)
+                SELECT sell_date
+                    , COUNT(DISTINCT product) AS num_sold
+                    , GROUP_CONCAT(DISTINCT product ORDER BY product SEPARATOR ',') AS products
+                    FROM Activities
+                        GROUP BY sell_date
+    
+    # 1327 List the Products Ordered in a Period - Easy
+    
+    SELECT product_name, SUM(unit) AS unit 
+        FROM Products AS p
+        JOIN Orders AS o
+            ON p.product_id = o.product_id
+        WHERE YEAR(o.order_date) = 2020 
+            AND MONTH(o.order_date) = 2 
+        GROUP BY product_name
+        HAVING SUM(unit) >=100
+
+                # 1327 List the Products Ordered in a Period - Easy II (45%)
+                SELECT p.product_name, SUM(o.unit) AS unit
+                    FROM Products AS p
+                    JOIN Orders AS o
+                        USING(product_id)
+                    WHERE o.order_date LIKE '2020-02%'
+                    GROUP BY p.product_name
+                    HAVING SUM(o.unit) > 99
+    
+    # 1517 Find users With Valid Emails - Easy
+        SELECT * 
+        FROM Users
+        WHERE mail REGEXP '^[A-Za-z][A-Za-z0-9_\.\-]*@leetcode(\\?com)?\\.com$'
+
+            # 1517 Find Users With Valid Emails - Easy II (31%) 
+                SELECT *
+                    FROM Users
+                    WHERE mail REGEXP '^[a-z][a-z0-9-_.]*@leetcode\\.com$';
+
+    # 1164 Product Price at a Given Date
+        WITH dates AS
+            (
+                SELECT product_id, 
+                MAX(
+                    CASE 
+                        WHEN change_date <= '2019-08-16'
+                            THEN change_date
+                        ELSE null
+                    END) as date
+                FROM Products 
+                GROUP BY product_id
+            )
+            , dated_product AS
+            (
+            SELECT p.product_id,
+                new_price AS price,
+                d.product_id AS dates_product,
+                d.date
+                FROM Products AS p
+                JOIN dates AS d
+                    ON p.product_id = d.product_id
+                    AND p.change_date = d.date
+            )
+            SELECT DISTINCT p.product_id,
+                COALESCE(d.price, 10) AS price
+                FROM Products AS p
+                LEFT JOIN dated_product AS d
+                    ON p.product_id = d.product_id
+
+    # 1204 Last Person to Fit in the Bus
+        WITH checking AS
+            (
+            SELECT *,
+                SUM(weight) OVER(ORDER BY turn) AS total_weight,
+                CASE WHEN SUM(weight) OVER(ORDER BY turn) <= 1000 THEN 'yes'
+                    ELSE 'no'
+                    END AS good
+                FROM Queue
+                ORDER BY turn
+            )
+            SELECT person_name
+                FROM checking
+                WHERE good = 'yes'
+                    AND turn IN 
+                        (SELECT MAX(turn)
+                        FROM checking
+                        WHERE good = 'yes')
+
+    # 176 Second Highest Salary - Medium
+    WITH two AS
+        (
+        SELECT 2 AS ranking
+        )
+        , ranked AS
+        (
+        SELECT *,
+            dense_rank() OVER(ORDER BY salary DESC)
+            AS ranking
+            FROM Employee 
+        )
+        SELECT DISTINCT e.salary AS SecondHighestSalary
+            FROM ranked AS e
+            RIGHT JOIN two AS t
+                ON e.ranking = t.ranking
+
+                # 176 Second Highest Salary - Medium II (85%)
+                    SELECT (
+                    SELECT salary
+                    FROM
+                    (
+                    SELECT DISTINCT salary,
+                        DENSE_RANK() OVER(ORDER BY salary DESC) AS ranking
+                        FROM Employee AS e1
+                    ) AS ranked
+                    WHERE ranking = 2  
+                    ) AS SecondHighestSalary
+
