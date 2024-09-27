@@ -11,3 +11,9 @@
 # 3
   SELECT name, area FROM world
     WHERE area BETWEEN 200000 AND 250000
+
+1 SELECT names
+
+# 1
+  SELECT name FROM world
+    WHERE name LIKE 'Y%'
