@@ -49,4 +49,10 @@
     WHERE LOWER(name) LIKE '_t%'
     ORDER BY name
 
+# 9 Find the countries that have two "o" characters separated by two others.
+  SELECT name FROM world
+   WHERE name LIKE '%o__o%'
 
+# 10 Find the countries that have exactly four characters.
+  SELECT name FROM world
+    WHERE name LIKE '____'
