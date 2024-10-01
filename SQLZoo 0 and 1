@@ -44,4 +44,9 @@
   SELECT name FROM world
     WHERE LOWER(name) LIKE '%a%a%a%'
 
+# 8 Find the countries that have "t" as the second character.
+  SELECT name FROM world
+    WHERE LOWER(name) LIKE '_t%'
+    ORDER BY name
+
 
