@@ -61,3 +61,8 @@
   SELECT name
     FROM world
      WHERE name = capital
+
+# 12 Find the country where the capital is the country plus "City".
+  SELECT name
+    FROM world
+   WHERE CONCAT(name, ' City') = capital
