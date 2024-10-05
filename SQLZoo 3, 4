@@ -81,3 +81,7 @@
   FROM nobel
      WHERE yr=1984
      ORDER BY subject IN ('physics','chemistry'), subject, winner
+
+
+4 SELECT within SELECT
+
