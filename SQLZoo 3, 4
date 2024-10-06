@@ -108,3 +108,6 @@
     WHERE name IN ('Argentina', 'Australia')
     )
     ORDER BY name                                
+
+# 4 Which country has a population that is more than United Kingdom but less than Germany? Show the name and the population.
+
