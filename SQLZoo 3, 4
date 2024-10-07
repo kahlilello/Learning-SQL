@@ -138,3 +138,13 @@
      (SELECT MAX(gdp) 
      FROM world
      WHERE continent = 'Europe')
+
+# 7 Find the largest country (by area) in each continent, show the continent, the name and the area:
+  SELECT a.continent, a.name, a.area
+    FROM world AS a
+    JOIN 
+    (SELECT MAX(area) AS area, continent
+    FROM world
+    GROUP BY continent
+    ) AS b
+    ON a.continent = b.continent AND a.area = b.area
