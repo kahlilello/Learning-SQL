@@ -148,3 +148,10 @@
     GROUP BY continent
     ) AS b
     ON a.continent = b.continent AND a.area = b.area
+
+# 8 List each continent and the name of the country that comes first alphabetically.
+  SELECT continent, MIN(name) AS name
+    FROM world
+    GROUP BY continent
+
+
