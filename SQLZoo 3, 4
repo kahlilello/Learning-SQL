@@ -180,3 +180,9 @@
     FROM world AS a
     ) AS cont
     WHERE population > contpop
+
+5 SUM and Count
+
+# 1 Show the total population of the world.
+  SELECT SUM(population)
+    FROM world
