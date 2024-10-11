@@ -28,3 +28,5 @@ SQL Zoo
     JOIN eteam AS e
       ON g.teamid = e.id
    WHERE gtime<=10
+
+# 6 List the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.
