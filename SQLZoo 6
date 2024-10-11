@@ -35,3 +35,10 @@ SQL Zoo
     JOIN eteam AS t
     ON (g.team1 = t.id)
     WHERE coach = "Fernando Santos"
+
+# 7 List the player for every goal scored in a game where the stadium was 'National Stadium, Warsaw'
+  SELECT go.player
+    FROM goal AS go
+    JOIN game AS ga
+        ON go.matchid = ga.id
+    WHERE ga.stadium = "National Stadium, Warsaw"
