@@ -30,3 +30,8 @@ SQL Zoo
    WHERE gtime<=10
 
 # 6 List the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.
+  SELECT mdate, teamname
+    FROM game AS g
+    JOIN eteam AS t
+    ON (g.team1 = t.id)
+    WHERE coach = "Fernando Santos"
