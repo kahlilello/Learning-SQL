@@ -61,4 +61,5 @@ SQL Zoo
     ON g.id = o.matchid
     GROUP BY g.stadium
 
-
+# 11 For every match involving 'POL', show the matchid, date and the number of goals scored.
+  
