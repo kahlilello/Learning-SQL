@@ -55,5 +55,10 @@ SQL Zoo
    GROUP BY teamname
 
 # 10 Show the stadium and the number of goals scored in each stadium.
+  SELECT g.stadium, COUNT(g.stadium)
+    FROM game AS g
+    JOIN goal AS o
+    ON g.id = o.matchid
+    GROUP BY g.stadium
 
 
