@@ -68,3 +68,9 @@ SQL Zoo
     GROUP BY matchid, mdate
 
 # 12 For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'
+SELECT go.matchid, ga.mdate, COUNT(*)
+FROM goal AS go
+JOIN game AS ga
+  ON go.matchid = ga.id
+WHERE teamid = 'GER'
+GROUP BY go.matchid, ga.mdate
