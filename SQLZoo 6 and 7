@@ -104,3 +104,4 @@ SQL Zoo
   WHERE title LIKE '%star trek%'
   ORDER BY yr
 
+# 4 What id number does the actor 'Glenn Close' have?
