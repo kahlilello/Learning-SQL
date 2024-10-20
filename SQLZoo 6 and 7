@@ -114,5 +114,5 @@ SQL Zoo
   FROM movie
   WHERE title = 'Casablanca'
 
-
+# 6 Obtain the cast list for 'Casablanca'.
 
