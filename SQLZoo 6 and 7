@@ -114,5 +114,15 @@ SQL Zoo
   FROM movie
   WHERE title = 'Casablanca'
 
-# 6 Obtain the cast list for 'Casablanca'.
+# 6 Obtain the cast list for 'Casablanca'
+  SELECT DISTINCT(a.name)
+  FROM casting AS c
+  JOIN actor AS a
+      ON c.actorid = a.id
+  WHERE movieid = 11768
+
+
+
+
+
 
