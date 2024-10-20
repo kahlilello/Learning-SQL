@@ -108,3 +108,5 @@ SQL Zoo
   SELECT id
   FROM actor
   WHERE name = 'Glenn Close'
+
+# 5 What is the id of the film 'Casablanca'
