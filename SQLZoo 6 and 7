@@ -121,6 +121,8 @@ SQL Zoo
       ON c.actorid = a.id
   WHERE movieid = 11768
 
+# 7 Obtain the cast list for the film 'Alien'
+
 
 
 
