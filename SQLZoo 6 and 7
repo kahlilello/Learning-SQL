@@ -131,7 +131,13 @@ SQL Zoo
   WHERE m.title = 'Alien'
 
 # 8 List the films in which 'Harrison Ford' has appeared
-
+  SELECT m.title
+  FROM movie AS m
+  JOIN casting AS c 
+      ON m.id = c.movieid
+  JOIN actor AS a
+      ON c.actorid = a.id
+  WHERE a.name = 'Harrison Ford'
 
 
 
