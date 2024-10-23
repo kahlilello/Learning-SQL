@@ -140,7 +140,14 @@ SQL Zoo
   WHERE a.name = 'Harrison Ford'
 
 # 9 List the films where 'Harrison Ford' has appeared - but not in the starring role.
-
+SELECT m.title
+FROM movie AS m
+JOIN casting AS c
+   ON m.id = c.movieid
+JOIN actor AS a
+   ON c.actorid = a.id
+WHERE a.name = 'Harrison Ford'
+AND c.ord != 1
 
 
 
