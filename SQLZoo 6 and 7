@@ -150,6 +150,14 @@ SQL Zoo
   AND c.ord != 1
 
 # 10 List the films together with the leading star for all 1962 films.
-
+  SELECT m.title, a.name
+  FROM movie AS m
+  JOIN casting AS c
+     ON c.movieid = m.id
+  JOIN actor AS a
+     ON a.id = c.actorid
+  WHERE 1=1
+    AND m.yr = 1962
+    AND c.ord = 1
 
 
