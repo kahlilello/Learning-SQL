@@ -169,7 +169,17 @@ SQL Zoo
   HAVING COUNT(title) > 2
 
 # 12 Lead actor in Julie Andrews movies
-
+  SELECT m.title, a.name
+  FROM casting AS c
+  JOIN movie AS m ON c.movieid = m.id
+  JOIN actor AS a ON c.actorid = a.id
+  WHERE c.movieid IN (
+    SELECT movieid 
+    FROM casting 
+    WHERE actorid IN
+    (SELECT id FROM actor
+    WHERE name='Julie Andrews'))
+    AND c.ord = 1
 
 
 
