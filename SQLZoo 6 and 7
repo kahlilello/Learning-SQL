@@ -195,4 +195,14 @@ SQL Zoo
   ORDER BY name
 
 # 14 List the films released in the year 1978, and how many actors they cast, ordered first by the number of actors in the cast, then by title.
+  SELECT m.title, c.cnt
+  FROM movie AS m
+  JOIN (
+  SELECT movieid, COUNT(actorid) as cnt
+  FROM casting
+  GROUP BY movieid
+  ) AS c
+  ON m.id = c.movieid
+  WHERE m.yr = '1978'
+  ORDER BY cnt DESC, title
 
