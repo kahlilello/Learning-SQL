@@ -206,3 +206,6 @@ SQL Zoo
   WHERE m.yr = '1978'
   ORDER BY cnt DESC, title
 
+# 15.
+List all the people who have worked with 'Art Garfunkel'.
+
