@@ -207,4 +207,18 @@ SQL Zoo
   ORDER BY cnt DESC, title
 
 # 15 List all the people who have worked with 'Art Garfunkel'.
+SELECT name FROM actor 
+WHERE id IN
+(
+SELECT DISTINCT actorid 
+FROM casting WHERE movieid 
+IN
+(
+SELECT DISTINCT movieid
+FROM casting 
+WHERE actorid = 1112
+)
+AND actorid != 1112
+ORDER BY actorid
+)
 
