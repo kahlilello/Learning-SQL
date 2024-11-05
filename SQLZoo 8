@@ -3,5 +3,8 @@ SQL Zoo 8
 8 Using Null
 
 # 1 List the teachers who have NULL for their department.
+  SELECT name
+  FROM teacher
+  WHERE dept IS NULL
 
 
