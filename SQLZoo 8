@@ -27,6 +27,11 @@ SQL Zoo 8
   , COALESCE(mobile,  '07986 444 2266') AS mobile
   FROM teacher
 
+# 6 Use the COALESCE function and a LEFT JOIN to print the teacher name and department name. Use the string 'None' where there is no department.
+  SELECT t.name, COALESCE(d.name, 'None')
+  FROM teacher AS t
+  LEFT JOIN dept AS d
+  ON t.dept = d.id
 
 
 
