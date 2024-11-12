@@ -33,5 +33,6 @@ SQL Zoo 8
   LEFT JOIN dept AS d
   ON t.dept = d.id
 
+# 7 Use COUNT to show the number of teachers and the number of mobile phones.
 
 
