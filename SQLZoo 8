@@ -44,3 +44,11 @@ SQL Zoo 8
   ON t.dept = d.id
   GROUP BY d.name
 
+# 9 
+SELECT name, 
+     CASE WHEN dept IN (1, 2) 
+        THEN "Sci"
+        ELSE "Art"
+       END AS name
+   FROM teacher
+
