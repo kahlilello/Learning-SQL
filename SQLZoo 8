@@ -62,5 +62,14 @@ SQL Zoo 8
           "None"
        END AS name
    FROM teacher
-   
 
+
+
+8+ Numeric Examples
+
+# 1 Show the the percentage who STRONGLY AGREE
+  SELECT A_STRONGLY_AGREE
+    FROM nss
+   WHERE question='Q01'
+     AND institution='Edinburgh Napier University'
+     AND subject='(8) Computer Science'
