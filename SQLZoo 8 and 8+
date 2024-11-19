@@ -73,3 +73,9 @@ SQL Zoo 8
    WHERE question='Q01'
      AND institution='Edinburgh Napier University'
      AND subject='(8) Computer Science'
+
+# 2 Show the institution and subject where the score is at least 100 for question 15.
+  SELECT institution, subject
+    FROM nss
+   WHERE question='Q15'
+     AND score >= 100
