@@ -102,6 +102,13 @@ SQL Zoo 8
      , '(8) Computer Science')
   GROUP BY subject
 
+# 6 Show the percentage of students who A_STRONGLY_AGREE to question 22 for the subject '(8) Computer Science' show the same figure for the subject '(H) Creative Arts and Design'.
+  SELECT subject, ROUND(SUM(response*A_STRONGLY_AGREE)/SUM(response),0)
+  FROM nss
+  WHERE question='Q22'
+    AND subject IN ('(H) Creative Arts and Design', '(8) Computer Science')
+  GROUP BY subject
+
 
 
 
