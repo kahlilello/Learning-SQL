@@ -118,6 +118,21 @@ SQL Zoo 8
      AND institution LIKE '%Manchester%'
   GROUP BY institution
 
+# 8 Show the institution, the total sample size and the number of computing students for institutions in Manchester for 'Q01'.
+  SELECT a.institution
+    , (SELECT SUM(sample)
+       FROM nss AS b
+          WHERE a.institution = b.institution 
+          AND b.question = 'Q01'
+          AND (b.institution LIKE '%Manchester%')
+    ) AS total_sample
+    , sample
+    FROM nss AS a
+   WHERE question='Q01'
+     AND (institution LIKE '%Manchester%')
+     AND subject = '(8) Computer Science'
+   ORDER BY institution
+
 
 
 
