@@ -1,8 +1,14 @@
 --HackerRank SQL
 
+/* Prep
 
 # Revising the Select Query I
   SELECT *
     FROM CITY
     WHERE CountryCode = 'USA'
         AND population > 100000
+
+# Query all columns (attributes) for every row in the CITY table.
+SELECT *
+    FROM CITY;
+
