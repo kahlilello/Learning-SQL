@@ -107,6 +107,19 @@ SQL Zoo 9- and 9+
   ORDER BY tw.whn
 
 
+# 6 This query shows the number of confirmed cases together with the world ranking for cases for the date '2020-04-20'. The number of COVID deaths is also shown. United States has the highest number, Spain is number 2... Notice that while Spain has the second highest confirmed cases, Italy has the second highest number of deaths due to the virus.
+Add a column to show the ranking for the number of deaths due to COVID.
+  SELECT 
+     name,
+     confirmed,
+     RANK() OVER (ORDER BY confirmed DESC) rc,
+     deaths
+     , RANK() OVER(ORDER BY deaths DESC) rc
+    FROM covid 
+  WHERE whn = '2020-04-20'
+  ORDER BY confirmed DESC
+
+
 
 
 
