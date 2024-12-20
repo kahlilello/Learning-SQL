@@ -120,6 +120,16 @@ Add a column to show the ranking for the number of deaths due to COVID.
   ORDER BY confirmed DESC
 
 
+# 7 Show the infection rate ranking for each country. Only include countries with a population of at least 10 million.
+ -- Bug. The query below is correct, SQL zoo keeps stating incorrect data. See other solutions for bug.
+  SELECT 
+     world.name,
+     ROUND(100000*confirmed/population,2),
+     RANK() OVER(ORDER BY ROUND(100000*confirmed/population,2)) AS rank
+    FROM covid JOIN world ON covid.name=world.name
+  WHERE whn = '2020-04-20' AND population > 10000000
+  ORDER BY population DESC
+
 
 
 
