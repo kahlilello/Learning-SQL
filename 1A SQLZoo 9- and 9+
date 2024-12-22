@@ -132,7 +132,30 @@ Add a column to show the ranking for the number of deaths due to COVID.
 
 # 8 For each country that has had at last 1000 new cases in a single day, show the date of the peak number of new cases.
   -- Bug, correct data but same as 7
-
+   WITH newcases AS
+    (
+    SELECT 
+           world.name
+         , whn
+         , confirmed
+         , confirmed - LAG(confirmed, 1) OVER(PARTITION BY world.name ORDER      BY whn) AS newcases
+        ,  population
+      FROM covid JOIN world ON covid.name=world.name
+      
+    )
+    , rnked AS 
+    (
+    SELECT name
+         ,  DATE_FORMAT(whn,'%Y-%m-%d') AS whn
+         ,  newcases
+         ,  RANK() OVER(PARTITION BY name ORDER BY newcases DESC) AS rnk
+         ,  population     
+         FROM newcases
+         WHERE newcases > 1000
+    )
+    SELECT name, whn, newcases AS peaknewcases 
+    FROM rnked WHERE rnk = 1
+    ORDER BY population DESC
 
 
 
