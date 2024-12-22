@@ -130,6 +130,9 @@ Add a column to show the ranking for the number of deaths due to COVID.
   WHERE whn = '2020-04-20' AND population > 10000000
   ORDER BY population DESC
 
+# 8 For each country that has had at last 1000 new cases in a single day, show the date of the peak number of new cases.
+  -- Bug, correct data but same as 7
+
 
 
 
