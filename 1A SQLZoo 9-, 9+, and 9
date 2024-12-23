@@ -158,6 +158,11 @@ Add a column to show the ranking for the number of deaths due to COVID.
     ORDER BY population DESC
 
 
+9 Self Join
+
+# 1 How many stops are in the database.
+  SELECT COUNT(DISTINCT stop)
+  FROM route
 
 
 
