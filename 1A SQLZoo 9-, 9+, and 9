@@ -170,6 +170,14 @@ Add a column to show the ranking for the number of deaths due to COVID.
   WHERE name = 'Craiglockhart'
 
 # 3 Give the id and the name for the stops on the '4' 'LRT' service.
+  SELECT s.id, s.name
+    FROM route AS r
+    JOIN stops AS s
+    ON r.stop = s.id
+    WHERE r.num = 4
+    AND r.company = 'LRT'
+    ORDER BY r.pos
+
 
 
 
