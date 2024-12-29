@@ -200,6 +200,21 @@ Add a column to show the ranking for the number of deaths due to COVID.
     JOIN stops stopb ON (b.stop=stopb.id)
   WHERE stopa.name='Craiglockhart' AND stopb.name = 'London Road'
 
+# 7 Give a list of all the services which connect stops 115 and 137 ('Haymarket' and 'Leith')
+  SELECT DISTINCT r1.company, r1.num
+  FROM route AS r1
+  JOIN route AS r2
+      ON r1.company = r2.company 
+            AND r1.num = r2.num
+  WHERE r1.stop = 115 AND r2.stop = 137 
+
+
+
+
+
+
+
+
 
 
 
