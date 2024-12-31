@@ -46,5 +46,27 @@
   -- Weather Observation Station 4 
       SELECT (COUNT (CITY)) - (COUNT (DISTINCT CITY)) FROM STATION;
 
+  -- Weather Observation Station 5
+      SELECT CITY, len
+      FROM (
+      SELECT TOP 1 CITY, LEN(CITY) AS len FROM STATION
+      WHERE LEN(CITY) =
+      (SELECT MIN(LEN(CITY)) AS minlen
+      FROM STATION)
+      ORDER BY CITY
+      ) AS minlen
+      UNION ALL
+      SELECT CITY, len
+      FROM (
+      SELECT TOP 1 CITY, LEN(CITY) AS len
+      FROM STATION
+      WHERE LEN(CITY) =
+      (SELECT MAX(LEN(CITY)) AS maxlen
+      FROM STATION)
+      ORDER BY CITY
+      ) AS maxlen;
+
+
+
 
 
