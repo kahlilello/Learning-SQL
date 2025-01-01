@@ -231,6 +231,8 @@ Add a column to show the ranking for the number of deaths due to COVID.
   WHERE s2.name = 'Craiglockhart'
   ORDER BY r1.company, r1.num, r1.pos
 
+# 10 Find the routes involving two buses that can go from Craiglockhart to Lochend. Show the bus no. and company for the first bus, the name of the stop for the transfer, and the bus no. and company for the second bus.
+
 
 
 
