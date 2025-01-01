@@ -278,7 +278,7 @@ Add a column to show the ranking for the number of deaths due to COVID.
     WHERE s2.name = 'Lochend'
     ) AS le
     ON cl.stop = le.stop
-    ORDER BY cl.num
+    ORDER BY cl.num, cl.name, le.num
 
 
 
