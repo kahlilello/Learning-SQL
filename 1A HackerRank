@@ -75,6 +75,8 @@
           OR UPPER(CITY) LIKE 'O%'
           OR UPPER(CITY) LIKE 'U%';
 
+  -- Weather Observation Station 7
+
 
 
 
