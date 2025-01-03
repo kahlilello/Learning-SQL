@@ -84,6 +84,19 @@
           OR UPPER(CITY) LIKE '%O'
           OR UPPER(CITY) LIKE '%U';
 
+  -- Weather Observation Station 8
+      SELECT CITY
+      FROM STATION
+      WHERE 
+      (UPPER(CITY) LIKE 'A%' OR UPPER(CITY) LIKE 'E%' OR UPPER(CITY) LIKE 'I%'
+      OR UPPER(CITY) LIKE 'O%' OR UPPER(CITY) LIKE 'U%')
+      AND
+      (UPPER(CITY) LIKE '%A' OR UPPER(CITY) LIKE '%E' OR UPPER(CITY) LIKE '%I'
+      OR UPPER(CITY) LIKE '%O' OR UPPER(CITY) LIKE '%U');
+
+
+
+
 
 
 
