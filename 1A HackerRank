@@ -103,6 +103,7 @@
           AND UPPER(CITY) NOT LIKE 'O%'
           AND UPPER(CITY) NOT LIKE 'U%';
 
+  -- Weather Observation Station 10
 
 
 
