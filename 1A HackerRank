@@ -112,11 +112,21 @@
           AND UPPER(CITY) NOT LIKE '%O'
           AND UPPER(CITY) NOT LIKE '%U';
 
+
+Basic Select
+
     -- Weather Observation Station 11
       SELECT DISTINCT CITY
       FROM STATION
       WHERE (SUBSTR(UPPER(CITY), 1, 1) NOT IN ('A', 'E', 'I', 'O', 'U'))
           OR (RIGHT(UPPER(CITY), 1) NOT IN ('A', 'E', 'I', 'O', 'U'));
+
+    -- Weather Observation Station 12
+
+
+
+
+
 
 
 
