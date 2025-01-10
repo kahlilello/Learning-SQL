@@ -128,6 +128,10 @@ Basic Select
               AND (RIGHT(UPPER(CITY), 1) NOT IN ('A', 'E', 'I', 'O', 'U'));
 
     -- Higher Than 75 Marks
+      SELECT Name 
+      FROM STUDENTS 
+          WHERE Marks > 75
+          ORDER BY RIGHT(Name, 3), ID Asc;
 
 
 
