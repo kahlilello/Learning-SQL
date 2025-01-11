@@ -138,6 +138,7 @@ Basic Select
           FROM Employee
             ORDER BY name;
 
+    -- Employee Salary
 
 
 
