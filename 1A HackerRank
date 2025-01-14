@@ -145,6 +145,8 @@ Basic Select
           AND months <10
       ORDER BY employee_id;
 
+    -- Type of Triangle
+
 
 
 
