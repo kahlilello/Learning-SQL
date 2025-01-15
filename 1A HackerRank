@@ -156,14 +156,13 @@ Basic Select
       FROM TRIANGLES;
 
     -- The PADS
-      SELECT CONCAT(Name, '(', LEFT(Occupation, 1), ')')
-      FROM OCCUPATIONS
+      SELECT CONCAT(Name, '(', LEFT(Occupation, 1), ')') AS Result
+        FROM OCCUPATIONS
       UNION ALL
-    SELECT CONCAT('There are a total of ', COUNT(Name), ' ', LOWER(Occupation), 's.')
-      FROM OCCUPATIONS
-      GROUP BY Occupation
-      ORDER BY COUNT(Name), Occupation;
-
+      SELECT CONCAT('There are a total of ', COUNT(Name), ' ', LOWER(Occupation), 's.') AS Result
+        FROM OCCUPATIONS
+        GROUP BY OCCUPATIONS
+        ORDER BY Result;
 
 
 
