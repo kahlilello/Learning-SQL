@@ -165,6 +165,15 @@ Basic Select
         ORDER BY Result;
 
     -- Occupations
+WITH D AS (
+SELECT Name
+    FROM OCCUPATIONS 
+    WHERE Occupation = 'Doctor'
+    ORDER BY Name
+)
+SELECT Name   
+    FROM OCCUPATIONS
+    WHERE Occupation = 'Professor';
 
 
 
