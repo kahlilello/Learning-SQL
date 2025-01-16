@@ -164,6 +164,8 @@ Basic Select
         GROUP BY OCCUPATIONS
         ORDER BY Result;
 
+    -- Occupations
+
 
 
 
