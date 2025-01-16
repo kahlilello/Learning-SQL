@@ -1,0 +1,13 @@
+-- Datalemur SQL Learning
+
+-- Histogram of Tweets
+  WITH twt_cnt AS (
+  SELECT COUNT(tweet_id) AS tweet_bucket, user_id FROM tweets
+  WHERE EXTRACT(YEAR FROM tweet_date) = 2022
+  GROUP BY user_id
+  )
+  SELECT tweet_bucket, COUNT(DISTINCT user_id) AS user_id
+  FROM twt_cnt
+  GROUP BY tweet_bucket
+  ORDER BY tweet_bucket;
+
