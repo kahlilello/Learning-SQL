@@ -11,3 +11,20 @@
   GROUP BY tweet_bucket
   ORDER BY tweet_bucket;
 
+-- LinkedIn SQL Interview Questions
+  WITH Grades AS 
+  (
+  SELECT candidate_id
+    , skill
+    , CASE WHEN skill in ('Python', 'Tableau', 'PostgreSQL')
+      THEN 1
+      ELSE 0
+      END AS valuable
+    FROM candidates
+  )
+  SELECT candidate_id
+    FROM Grades
+    GROUP BY candidate_id
+    HAVING SUM(valuable) >= 3;
+
+
