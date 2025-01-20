@@ -28,3 +28,7 @@
     HAVING SUM(valuable) >= 3;
 
 
+-- Tesla SQL Interview Question
+
+
+
