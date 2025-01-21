@@ -33,6 +33,13 @@
   FROM parts_assembly
   WHERE finish_date IS NULL;
 
+-- Facebook SQL Interview Questions
+  SELECT DISTINCT p.page_id
+  FROM pages AS p 
+  LEFT JOIN page_likes AS l 
+    ON p.page_id = l.page_id
+    WHERE l.user_id IS NULL;
+
 
 
 
