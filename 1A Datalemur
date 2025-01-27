@@ -41,5 +41,12 @@
     WHERE l.user_id IS NULL;
 
 
+-- Laptop vs. Mobile Viewership 
+SELECT COUNT(DISTINCT user_id) AS laptop_views
+FROM viewership
+WHERE device_type = 'laptop';
+
+
+
 
 
