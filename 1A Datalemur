@@ -52,6 +52,14 @@
     WHERE device_type != 'laptop'
     );
 
+-- Average Post Hiatus (Part 1)
+  SELECT user_id
+  , MAX(post_date)::DATE - MIN(post_date)::DATE
+  FROM posts
+  WHERE EXTRACT(YEAR FROM post_date) = 2021
+  GROUP BY user_id
+  HAVING MAX(post_date)::DATE - MIN(post_date)::DATE > 0;
+
 
 
 
