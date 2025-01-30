@@ -70,6 +70,15 @@
   ORDER BY COUNT(DISTINCT message_id) DESC
   LIMIT 2;
 
-
+-- Duplicate Job Listing
+  SELECT COUNT (DISTINCT company_id) AS duplicate_companies
+  FROM 
+  (
+  SELECT company_id, title, description,
+  COUNT(*) AS cnt 
+  FROM job_listings
+  GROUP BY company_id, title, description
+  ) AS dist
+  WHERE cnt > 1;
 
 
