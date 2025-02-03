@@ -83,6 +83,18 @@
 
 
 -- Cities with Completed Trades
+  SELECT city, COUNT(DISTINCT order_id)
+  FROM
+  (
+  SELECT t.user_id, t.order_id, u.city   
+  FROM trades AS t 
+    JOIN users AS u 
+      ON t.user_id = u.user_id
+  WHERE status = 'Completed'
+  ) AS total 
+  GROUP BY city
+  ORDER BY count DESC
+  LIMIT 3;
 
 
 
