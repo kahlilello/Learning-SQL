@@ -114,17 +114,14 @@
   LIMIT 5;
 
 -- App Click-through Rate (CTR)
-
-SELECT app_id
-  , SUM(CASE WHEN event_type = 'click' THEN 1
-        ELSE 0 END) AS clicks
-  ,  SUM(CASE WHEN event_type = 'impression' THEN 1
-        ELSE 0 END) AS impressions
-  
-  , ROUND(100.00 * (SUM(CASE WHEN event_type = 'click' THEN 1
-        ELSE 0 END)::decimal / 
-    SUM(CASE WHEN event_type = 'impression' THEN 1
-        ELSE 0 END)), 2) AS ctr    
-        
-FROM events
-GROUP BY app_id;
+  SELECT app_id
+    
+    , ROUND(100.00 * (SUM(CASE WHEN event_type = 'click' THEN 1
+          ELSE 0 END)::decimal / 
+      SUM(CASE WHEN event_type = 'impression' THEN 1
+          ELSE 0 END)), 2) AS ctr              
+  FROM events
+  WHERE EXTRACT(YEAR FROM TIMESTAMP) = '2022'
+  GROUP BY app_id;
+  FROM events
+  GROUP BY app_id;
