@@ -139,16 +139,18 @@
   WITH stats AS (
   SELECT 
       e.employee_id
-    , COUNT(DISTINCT q.query_id) AS querycnt
+    , COALESCE(COUNT(DISTINCT q.query_id), 0) AS unique_queries
   FROM queries AS q
   RIGHT JOIN employees AS e 
     ON q.employee_id = e.employee_id
+      AND q.query_starttime >= '2023-07-01T00:00:00Z'
+      AND q.query_starttime < '2023-10-01T00:00:00Z'
   GROUP BY e.employee_id
   )
-  SELECT querycnt AS unique_queries
+  SELECT unique_queries
     , COUNT(DISTINCT employee_id) AS employee_count
     FROM stats
-    GROUP BY querycnt;
+    GROUP BY unique_queries;
 
 
 
