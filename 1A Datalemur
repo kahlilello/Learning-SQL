@@ -135,3 +135,22 @@
   WHERE t.signup_action = 'Confirmed'
     AND (t.action_date::date - e.signup_date::date) = 1;
 
+-- IBM db2 Product Analytics
+  WITH stats AS (
+  SELECT 
+      e.employee_id
+    , COUNT(DISTINCT q.query_id) AS querycnt
+  FROM queries AS q
+  RIGHT JOIN employees AS e 
+    ON q.employee_id = e.employee_id
+  GROUP BY e.employee_id
+  )
+  SELECT querycnt AS unique_queries
+    , COUNT(DISTINCT employee_id) AS employee_count
+    FROM stats
+    GROUP BY querycnt;
+
+
+
+
+
