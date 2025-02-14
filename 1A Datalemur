@@ -152,6 +152,13 @@
     FROM stats
     GROUP BY unique_queries;
 
+-- Card Issued Difference
+  SELECT card_name
+    , MAX(issued_amount) - MIN(issued_amount) difference 
+  FROM monthly_cards_issued
+  GROUP BY card_name
+  ORDER BY MAX(issued_amount) - MIN(issued_amount) DESC;
+
 
 
 
