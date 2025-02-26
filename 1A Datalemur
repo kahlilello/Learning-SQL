@@ -214,6 +214,11 @@
     FROM a
   WHERE rnk = 3;
 
+-- Second Highest Salary
+  SELECT MAX(salary)
+  FROM employee
+  WHERE salary < (SELECT MAX(salary) FROM employee)
+
 
 
 
