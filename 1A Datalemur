@@ -219,6 +219,25 @@
   FROM employee
   WHERE salary < (SELECT MAX(salary) FROM employee)
 
+  -- Window fn Code:
+    WITH rnk AS (
+      SELECT *
+        , RANK() OVER(ORDER BY salary DESC) AS rnk
+      FROM employee
+      )
+      SELECT salary
+        FROM rnk 
+        WHERE rnk = 2
+
+  -- Row Number Code:
+    WITH rnk AS (
+      SELECT salary
+        , ROW_Number() OVER(ORDER BY salary DESC) AS rnk
+      FROM employee
+      )
+      SELECT salary
+        FROM rnk 
+        WHERE rnk = 2 
 
 
 
