@@ -239,6 +239,20 @@
         FROM rnk 
         WHERE rnk = 2 
 
+
+  -- Sending VS. Opening Chats
+SELECT 
+   ab.age_bucket
+  , SUM(a.time_spent) AS timespent
+  , SUM(CASE WHEN a.activity_type = 'send' THEN time_spent ELSE 0 END) AS send
+  , SUM(CASE WHEN a.activity_type = 'open' THEN time_spent ELSE 0 END) AS open
+  , 
+  
+FROM activities AS a 
+  LEFT JOIN age_breakdown AS ab 
+    ON a.user_id = ab.user_id
+  GROUP BY ab.age_bucket;
+
   
 
 
