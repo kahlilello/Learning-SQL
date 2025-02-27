@@ -246,13 +246,19 @@ SELECT
   , SUM(a.time_spent) AS timespent
   , SUM(CASE WHEN a.activity_type = 'send' THEN time_spent ELSE 0 END) AS send
   , SUM(CASE WHEN a.activity_type = 'open' THEN time_spent ELSE 0 END) AS open
-  , 
+  , ROUND((SUM(CASE WHEN a.activity_type = 'send' THEN time_spent ELSE 0 END)
+          / (SUM(CASE WHEN a.activity_type = 'send' THEN time_spent ELSE 0 END) 
+              + SUM(a.time_spent))
+    )*100.00, 2) AS send_perc
+  , ROUND((SUM(CASE WHEN a.activity_type = 'open' THEN time_spent ELSE 0 END)
+          / (SUM(CASE WHEN a.activity_type = 'open' THEN time_spent ELSE 0 END) 
+              + SUM(a.time_spent))
+    )*100.00, 2) AS open_perc
   
 FROM activities AS a 
   LEFT JOIN age_breakdown AS ab 
     ON a.user_id = ab.user_id
   GROUP BY ab.age_bucket;
-
   
 
 
