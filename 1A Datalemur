@@ -204,7 +204,7 @@
   ORDER BY COUNT(DISTINCT case_id) DESC
   ) AS tst;
 
--- User's Third Transaction
+-- User's Third Transaction - Medium
   WITH a AS (
   SELECT *
   , RANK() OVER(PARTITION BY user_id ORDER BY transaction_date) AS rnk
@@ -214,7 +214,7 @@
     FROM a
   WHERE rnk = 3;
 
--- Second Highest Salary
+-- Second Highest Salary - Medium
   SELECT MAX(salary)
   FROM employee
   WHERE salary < (SELECT MAX(salary) FROM employee)
@@ -240,7 +240,7 @@
         WHERE rnk = 2 
 
 
-  -- Sending VS. Opening Chats
+  -- Sending VS. Opening Chats - Medium
       SELECT 
          ab.age_bucket
         , ROUND((SUM(CASE WHEN a.activity_type = 'send' THEN time_spent ELSE 0 END)
@@ -258,7 +258,7 @@
         GROUP BY ab.age_bucket;
 
 
-  -- Tweet's Rolling Averages
+  -- Tweet's Rolling Averages - Medium
         SELECT 
             user_id
           , tweet_date
@@ -269,11 +269,30 @@
         FROM tweets;
 
 
-  -- Highest-Grossing Items
+  -- Highest-Grossing Items - Medium
+    WITH A AS 
+    (
     SELECT * 
-      , SUM(spend) OVER(PARTITION BY category, product) AS total_spend
-    FROM product_spend;
-  
+      , SUM(spend) OVER(PARTITION BY product) AS total_spend
+    FROM product_spend
+    WHERE EXTRACT(YEAR FROM transaction_date) = 2022
+    )
+    , B AS 
+    (
+    SELECT *
+      , DENSE_RANK() OVER(PARTITION BY category ORDER BY total_spend DESC) AS rnk 
+    FROM A
+    )
+    
+    SELECT 
+        category
+      , product
+      , total_spend
+    FROM B 
+    WHERE rnk <= 2
+    GROUP BY category, product, total_spend
+    ORDER BY category, total_spend DESC;
+
 
 
 
