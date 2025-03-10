@@ -291,7 +291,24 @@
     FROM B 
     WHERE rnk <= 2
     GROUP BY category, product, total_spend
-    ORDER BY category, total_spend DESC;
+    ORDER BY category, total_spend DESC
+
+  -- Top Three Salaries
+      WITH A AS 
+      (
+      SELECT e.*
+        , d.department_name
+        , DENSE_RANK() OVER(PARTITION BY d.department_name ORDER BY e.salary DESC) AS rnk
+      FROM employee AS e 
+      LEFT JOIN department AS d 
+        ON e.department_id = d.department_id
+      LIMIT 20
+      )
+      SELECT department_name
+        , name 
+        , salary
+        FROM A
+        WHERE rnk <= 3;
 
 
 
