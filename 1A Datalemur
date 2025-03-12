@@ -310,6 +310,19 @@
         FROM A
         WHERE rnk <= 3;
 
+  -- Signup Activation Rate
+      SELECT 
+         ROUND(
+          COUNT(DISTINCT 
+          (CASE WHEN signup_action = 'Confirmed' THEN user_id
+          ELSE NULL 
+          END))::DECIMAL / COUNT(DISTINCT e.user_id)
+          , 2)
+          AS
+          confirmed_rate
+      FROM emails AS e 
+      LEFT JOIN texts AS t 
+        ON e.email_id = t.email_id; 
 
 
 
