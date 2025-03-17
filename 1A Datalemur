@@ -325,4 +325,13 @@
         ON e.email_id = t.email_id; 
 
 
+-- Super Cloud Customer 
+  SELECT C.customer_id
+  FROM customer_contracts AS C 
+  JOIN Products AS P 
+    ON c.product_id = P.product_id 
+  
+  GROUP BY C.customer_id
+  HAVING COUNT(DISTINCT product_category) = 
+    (SELECT COUNT(DISTINCT product_category) FROM products);
 
