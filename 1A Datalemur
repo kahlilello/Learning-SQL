@@ -348,3 +348,17 @@ SELECT *
     ELSE measurement_value 
     END AS odd 
 FROM measurements;
+
+
+SELECT *
+  , CAST(measurement_time AS date) AS day
+  , CASE WHEN floor(measurement_value) % 2 = 0 THEN 'even'
+    ELSE 'odd'
+    END AS even_odd
+  , CASE WHEN floor(measurement_value) % 2 = 0 THEN measurement_value
+    ELSE NULL 
+    END AS evens
+  , CASE WHEN floor(measurement_value) % 2 = 0 THEN NULL 
+    ELSE measurement_value 
+    END AS odd 
+FROM measurements;
