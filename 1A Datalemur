@@ -340,5 +340,10 @@ SELECT *
   , CASE WHEN measurement_value%2 = 0 THEN 'even'
     ELSE 'odd'
     END AS even_odd
+  , CASE WHEN measurement_value%2 = 0 THEN measurement_value
+    ELSE NULL 
+    END AS evens
+  , CASE WHEN measurement_value%2 = 0 THEN NULL 
+    ELSE measurement_value 
+    END AS odd 
 FROM measurements;
-
