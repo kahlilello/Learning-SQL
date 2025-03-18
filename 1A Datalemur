@@ -335,3 +335,10 @@
   HAVING COUNT(DISTINCT product_category) = 
     (SELECT COUNT(DISTINCT product_category) FROM products);
 
+-- Odd and Even Measurements
+SELECT *
+  , CASE WHEN measurement_value%2 = 0 THEN 'even'
+    ELSE 'odd'
+    END AS even_odd
+FROM measurements;
+
