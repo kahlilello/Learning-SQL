@@ -337,6 +337,7 @@
 
 -- Odd and Even Measurements
 SELECT *
+  , CAST(measurement_time AS date) AS day
   , CASE WHEN measurement_value%2 = 0 THEN 'even'
     ELSE 'odd'
     END AS even_odd
