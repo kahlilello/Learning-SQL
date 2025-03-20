@@ -353,3 +353,17 @@
         END) AS even_sum
       FROM A
       GROUP BY measurement_day;
+
+
+-- Swapped Food Delivery 
+  SELECT 
+   CASE  
+    WHEN order_id %2 = 0 THEN order_id - 1
+    WHEN order_id %2 != 0 AND order_id != 
+      (SELECT MAX(order_id) FROM orders)
+      THEN order_id + 1
+    ELSE order_id
+    END AS corrected_order_id
+    , item 
+  FROM orders
+  ORDER BY corrected_order_id;
