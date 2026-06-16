@@ -367,3 +367,24 @@
     , item 
   FROM orders
   ORDER BY corrected_order_id;
+
+
+
+
+
+/*
+---- Mediums
+*/
+
+
+-- Supercloud Customer
+
+
+
+
+
+
+
+
+
+
