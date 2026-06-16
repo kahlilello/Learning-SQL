@@ -1,5 +1,95 @@
 -- Datalemur SQL Learning
 
+
+
+
+
+
+/* -------------------
+-- HARD
+---------------------- */
+
+
+--- Active User Retention
+
+
+WITH enhanced AS (
+SELECT * 
+  , CASE WHEN event_type IN ('sign_in', 'like', 'comment')
+      THEN 1 
+      ELSE NULL
+      END AS active
+  , EXTRACT(MONTH FROM event_date) AS month
+  , EXTRACT(YEAR FROM event_date) AS Yr
+
+FROM user_actions
+WHERE EXTRACT(YEAR FROM event_date) = 2022
+)
+
+, agg AS (
+
+SELECT user_id
+  , month
+  , SUM(active) AS ttl_acts
+  
+  FROM enhanced
+  GROUP BY user_id, month
+)
+
+
+, active AS (
+SELECT 
+    curr.user_id
+  , curr.month
+  , curr.ttl_acts AS active_curr
+  , prev.month AS prev_mo
+  , prev.ttl_acts AS active_prev
+  , CASE WHEN curr.ttl_acts > 0 and prev.ttl_acts > 0
+    THEN 1 
+    ELSE NULL 
+    END AS active
+  FROM agg AS curr 
+  LEFT JOIN agg AS prev
+    ON curr.user_id = prev.user_id
+      AND curr.month = prev.month + 1
+)
+
+SELECT month 
+  , COUNT(DISTINCT user_id) AS monthly_active_users
+  FROM active
+  WHERE month = 7
+      AND active > 0
+  GROUP BY month
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- Histogram of Tweets
   WITH twt_cnt AS (
   SELECT COUNT(tweet_id) AS tweet_bucket, user_id FROM tweets
@@ -392,6 +482,9 @@ SELECT customer_id
   WHERE ttl_cats = 
     (SELECT COUNT(DISTINCT product_category)
       FROM products)
+
+
+
 
 
 
