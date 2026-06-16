@@ -379,6 +379,20 @@
 
 -- Supercloud Customer
 
+WITH Agg AS (
+SELECT customer_id
+  , COUNT (DISTINCT p.product_category) AS ttl_cats
+  FROM customer_contracts AS c 
+  JOIN products AS p 
+    ON c.product_id = p.product_id
+  GROUP BY customer_id
+)
+SELECT customer_id
+  FROM Agg
+  WHERE ttl_cats = 
+    (SELECT COUNT(DISTINCT product_category)
+      FROM products)
+
 
 
 
