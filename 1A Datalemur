@@ -66,6 +66,35 @@ SELECT month
 
 
 
+--- Y-on-Y Growth Rate
+
+WITH yr_add AS (
+SELECT * 
+  , EXTRACT(YEAR FROM transaction_date) AS year
+FROM user_transactions
+)
+
+, Agg AS (
+
+SELECT year
+  , product_id
+  , SUM(spend) AS spend
+  FROM yr_add 
+  GROUP BY year, product_id
+)
+
+SELECT 
+    curr.year 
+    , curr.product_id
+    , curr.spend AS curr_year_spend
+    , prev.spend AS prev_year_spend
+    , ROUND(((curr.spend - prev.spend)/prev.spend)*100, 2) AS yoy_rate
+  FROM agg as curr
+  LEFT JOIN agg AS prev 
+    ON curr.product_id = prev.product_id
+    AND curr.year - 1 = prev.year
+  ORDER BY curr.product_id ASC,  curr.year ASC 
+;
 
 
 
@@ -86,7 +115,7 @@ SELECT month
 
 
 
-
+----- OLD
 
 
 
