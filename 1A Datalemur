@@ -9,6 +9,44 @@
 -- HARD
 ---------------------- */
 
+--- Consecutive Filing Year
+
+
+WITH yr AS (
+SELECT *
+  , EXTRACT(YEAR FROM filing_date) AS Yr
+  FROM filed_taxes
+  WHERE UPPER(product) LIKE '%TURBOTAX%'
+)
+
+
+, prevs AS (
+
+SELECT user_id
+  , yr
+  , LAG(yr) OVER(PARTITION BY user_id ORDER BY yr ) AS prev_yr
+  , LAG(yr, 2) OVER(PARTITION BY user_id ORDER BY yr) AS prevprev_yr
+  
+  FROM yr
+)
+
+, loyaltyTest AS (
+SELECT *
+  , CASE WHEN yr - prev_yr = 1 
+      And prev_yr - prevprev_yr = 1
+    THEN 1
+    ELSE NULL 
+    END AS loyal
+  FROM prevs
+)
+SELECT DISTINCT user_id
+  FROM loyaltyTest
+  WHERE loyal = 1
+
+
+
+
+
 
 --- Median Google Search Frequency
 WITH cum AS 
