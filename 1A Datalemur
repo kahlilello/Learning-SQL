@@ -10,6 +10,24 @@
 ---------------------- */
 
 
+--- Median Google Search Frequency
+WITH cum AS 
+(
+SELECT searches
+  , num_users
+  , SUM(num_users) OVER(ORDER BY searches) AS running 
+  , SUM(num_users) OVER() AS total 
+FROM search_frequency
+)
+SELECT ROUND(AVG(searches), 1) AS median
+  FROM cum 
+  WHERE running >= total / 2.0 
+    AND running - num_users <= total /2.0
+
+
+
+
+
 --- Active User Retention
 
 
